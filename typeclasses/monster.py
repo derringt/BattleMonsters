@@ -24,46 +24,35 @@ class Monster(DefaultObject):
         self.db.iv['spd'] = int(r.getrandbits(5))
 
         # EVs start at 0
-        self.db.ev = {}
-        self.db.ev['hp'] = 0
-        self.db.ev['att'] = 0
-        self.db.ev['def'] = 0
-        self.db.ev['spatt'] = 0
-        self.db.ev['spdef'] = 0
-        self.db.ev['spd'] = 0
+        self.db.ev = { 'hp': 0,
+                       'att': 0,
+                       'def': 0,
+                       'spatt': 0,
+                       'spdef': 0,
+                       'spd': 0 }
 
+        #Empty dictionary for base stats (based on species)
         self.db.base = {}
-        self.db.base['hp'] = 1
-        self.db.base['att'] = 1
-        self.db.base['def'] = 1
-        self.db.base['spatt'] = 1
-        self.db.base['spdef'] = 1
-        self.db.base['spd'] = 1
-
-        self.db.xp = 0
-        self.db.lvl = 1
-        self.db.xp_type = "Unknown"
-
-        self.db.species = "MissingNo"
-        self.db.dex = 0
-        self.db.types = ("Normal", "")
-
-        self.db.gender = "None"
 
     def after_spawn(self):
         t = csv.DictReader(open("world/monsters/monster_list.csv"))
         for row in t:
-            if row['species'] == self.db.species: break
+            if row['species'].lower() == self.db.species.lower(): break
 
-        self.db.base['hp']  = row['hp']
-        self.db.base['att'] = row['att']
-        self.db.base['def'] = row['def']
-        self.db.base['spatt'] = row['spatt']
-        self.db.base['spdef'] = row['spdef']
-        self.db.base['spd'] = row['spd']
+        self.db.species = self.db.species.lower().title()
+        self.db.base['hp']  = int(row['hp'])
+        self.db.base['att'] = int(row['att'])
+        self.db.base['def'] = int(row['def'])
+        self.db.base['spatt'] = int(row['spatt'])
+        self.db.base['spdef'] = int(row['spdef'])
+        self.db.base['spd'] = int(row['spd'])
 
-        self.db.dex = row['dex']
+        self.db.dex = int(row['dex'])
 
-        self.db.gender = set_gender(row['gender'])
+        self.db.gender = set_gender(int(row['gender']))
 
         self.db.types = (row['type1'], row['type2'])
+
+        self.db.lvl_rate = row['lvl_rate']
+
+#    def set_xp(number, self):
